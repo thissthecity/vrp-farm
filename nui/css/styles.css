@@ -1,0 +1,67 @@
+@import url("farm.css");
+@import url("craft.css");
+@import url("policia.css");
+
+* {
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    border: 0;
+    outline: 0;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+:focus {
+    outline: 0;
+}
+
+::selection {
+    background: transparent;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.enable-scroll {
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 1px;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.60);
+    border-radius: 10px;
+}
+
+.title {
+    border-radius: 5px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.6);
+    font-weight: bold;
+    display: flex;
+    padding: 0 10px;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 10px;
+}
