@@ -8,8 +8,8 @@ recipes = {}
 -----------------------------------------------------------------------------------------------
 --[ CALLBACK ]
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("selCraft",function(data,cb)
-	if data == "close" then
+RegisterNUICallback("selCraft", function(data,cb)
+	if data.action == "close" then
 		ToggleActionMenu('craft')
 	else
         TriggerServerEvent("farm:Server:Producao", data)

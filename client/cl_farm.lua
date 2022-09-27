@@ -190,6 +190,7 @@ function setActualFarm(farm)
 end
 
 function getFarmPoint(randomico)
+    -- TriggerServerEvent("VRP:Debug", vRP.dump(pontos), GetCurrentResourceName())
     local routes = pontos[actualFarmType] or {}
     if(#routes > 0) then
         local routeIndex = math.random(1, #routes)

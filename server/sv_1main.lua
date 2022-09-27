@@ -1,6 +1,6 @@
 local scriptName = "vrp_farm"
 -----------------------------------------------------------------------------------------------------------------------------------------
---[ CONEXOES ]
+--[ CONEXAO ]
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Tunnel = module("vrp","lib/Tunnel")
 local Proxy = module("vrp","lib/Proxy")
@@ -56,24 +56,27 @@ function getItemRecipes(items)
         for k,v in pairs(items) do
             local itemInfo = src.getItem(v)
             local itemInfoRecipe = json.decode(itemInfo.recipe)
-            local recipe = {}
-            if(itemInfoRecipe) then
-                for l, x in pairs(itemInfoRecipe) do
-                    local item = src.getItem(x.id)
-                    table.insert(recipe, {
-                        id = item.id,
-                        item = item.item,
-                        qtd = x.qtd*itemInfo.packSize
-                    })
+            local packSize = json.decode(itemInfo.packSize)
+            for l, x in pairs(packSize) do
+                local recipe = {}
+                if(itemInfoRecipe) then
+                    for m, y in pairs(itemInfoRecipe) do
+                        local item = src.getItem(y.id)
+                        table.insert(recipe, {
+                            id = item.id,
+                            item = item.item,
+                            qtd = parseInt(y.qtd*x)
+                        })
+                    end
                 end
+                table.insert(itemRecipes, {
+                    id = itemInfo.id,
+                    item = itemInfo.item,
+                    descricao = itemInfo.descricao,
+                    packSize = x,
+                    recipe = recipe
+                })
             end
-            table.insert(itemRecipes, {
-                id = itemInfo.id,
-                item = itemInfo.item,
-                descricao = itemInfo.descricao,
-                packSize = itemInfo.packSize,
-                recipe = recipe
-            })
         end
     end
     return itemRecipes
