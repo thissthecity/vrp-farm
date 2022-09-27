@@ -16,7 +16,9 @@ AddEventHandler("farm:Server:Producao", function(data)
     if(user_id and itemData) then
         if(checaEspaco(source, user_id, itemData, data.packSize)) then
             if(checaReceita(source, user_id, itemData, data.packSize)) then
-                local buildTime = itemData.buildTime * 1000
+                local buildMultiplier = data.packSize / 10000
+                if(buildMultiplier < 1) then buildMultiplier = 1 end
+                local buildTime = itemData.buildTime * buildMultiplier * 1000
                 TriggerClientEvent("progress", source, buildTime, string.format("Fabricando: <b>%sx %s</b>", data.packSize, itemData.descricao))
                 TriggerClientEvent("VRP:Client:PlayAnim", source, false, {{"amb@prop_human_parking_meter@female@idle_a","idle_a_female"}}, true)
                 SetTimeout(buildTime, function()
