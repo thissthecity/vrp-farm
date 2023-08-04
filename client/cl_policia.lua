@@ -2,7 +2,7 @@
 -- [ VARIAVEIS ]
 -----------------------------------------------------------------------------------------------------------------------------------------
 policiaMarkers = {}
-local blipPolcia = false
+local blipPolicia = false
 local blipSettings = {
     coordenadas = {x = 0, y = 0, z = 0},
     sprite = 1,
@@ -39,7 +39,7 @@ RegisterNUICallback("selRota", function(data, cb)
         if(farmPoint) then
             servicoPolicia = true
             blipSettings.coordenadas = farmPoint
-            blipPolcia = vRP.addGpsBlip(scriptName, blipSettings)
+            blipPolicia = vRP.addGpsBlip(scriptName, blipSettings)
             TriggerEvent("Notify","sucesso","Rota iniciada.")
             ToggleActionMenu('policia')
         else
@@ -65,12 +65,12 @@ Citizen.CreateThread(function()
                     local vehSpeed = math.ceil(GetEntitySpeed(vehicle)*3.6)
                     if(vehSpeed <= maxSpeed) then
                         if(isValidVehicle(vehicle)) then
-                            vRP.removeGpsBlip(scriptName, blipPolcia)
+                            vRP.removeGpsBlip(scriptName, blipPolicia)
                             local farmPoint = getRotaPoint()
                             vSERVER.checkPoliciaPayment()
                             if(farmPoint ~= nil) then 
                                 blipSettings.coordenadas = farmPoint
-                                blipPolcia = vRP.addGpsBlip(scriptName, blipSettings)
+                                blipPolicia = vRP.addGpsBlip(scriptName, blipSettings)
                             else
                                 servicoPolicia = false
                                 TriggerEvent("Notify","informativo","Rota finalizada.")
@@ -98,7 +98,7 @@ RegisterNetEvent("farm:Client:Finalizar")
 AddEventHandler("farm:Client:Finalizar", function()
     if(servicoPolicia) then
         servicoPolicia = false
-        vRP.removeGpsBlip(scriptName, blipPolcia)
+        vRP.removeGpsBlip(scriptName, blipPolicia)
         actualFarmType = nil
         actualRoute = nil
         actualPoint = nil

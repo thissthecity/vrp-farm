@@ -15,12 +15,12 @@
     margin-top: 10px;
     height: calc(100% - 40px);
     max-height: 800px;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.3);
     padding: 10px;
 }
 
 .craft-item-info {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.1);
     padding: 10px;
     display: flex;
     height: 140px;

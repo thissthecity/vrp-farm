@@ -16,6 +16,7 @@ local selecionado = 0
 local farmCount = 0
 local farmLimit = 20
 local actualFarmType = nil
+local actualFarmBlip = nil
 local actualRoute = nil
 local actualPoint = nil
 local actualFarm = nil
@@ -25,7 +26,7 @@ local cooldown = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 --[ CALLBACK ]
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("selFarm",function(data,cb)
+RegisterNUICallback("selFarm",function(data, cb)
 	if data == "close" then
 		ToggleActionMenu('farm')
 	else
@@ -33,7 +34,7 @@ RegisterNUICallback("selFarm",function(data,cb)
         if(actualFarmType and cooldown[actualFarmType] and cooldown[actualFarmType] > 0) then
             TriggerEvent("Notify","negado","Você está em horário de descanso.</br> Retorne em: "..parseInt(cooldown[actualFarmType]).." segundo(s)")
         else
-            local farmPoint = getFarmPoint(false)
+            local farmPoint = getFarmPoint()
             if(farmPoint) then
                 if(vSERVER.isLegal()) then
                     cooldown[actualFarmType] = 0
@@ -58,8 +59,9 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(1000)
         if(actualFarmType) then
-            if cooldown[actualFarmType] > 0 then
-                cooldown[actualFarmType] = cooldown[actualFarmType] - 1
+            local cdVar = getCoolDown(actualFarmType)
+            if cdVar > 0 then
+                setCoolDown(actualFarmType, cdVar - 1)
             end
         end
 	end
@@ -79,8 +81,8 @@ Citizen.CreateThread(function()
                     if distance <= 1.2 then
                         if IsControlJustReleased(0,38) then
                             vRP.removeGpsBlip(scriptName, blip)
-                            local farmPoint = getFarmPoint(false)
-                            vSERVER.checkFarmPayment(actualFarmType)
+                            local farmPoint = getFarmPoint()
+                            TriggerServerEvent("farm:Server:Payment", actualFarmType, actualFarmBlip)
                             if(farmPoint ~= nil) then 
                                 blipSettings.coordenadas = farmPoint
                                 blip = vRP.addGpsBlip(scriptName, blipSettings)
@@ -89,6 +91,7 @@ Citizen.CreateThread(function()
                                 TriggerEvent("Notify","informativo","Rota finalizada.")
                                 sleepTimeMainThread = 1000
                                 actualFarmType = nil
+                                actualFarmBlip = nil
                                 actualRoute = nil
                                 actualPoint = nil
                             end
@@ -144,6 +147,7 @@ function processFarm()
                     vRP.drawTxt(textoMarker,4,0.5,0.93,0.50,255,255,255,180)
                     if(IsControlJustReleased(0,38) and vSERVER.checkPermission(marker.permissoes) and not(atualizacaoPendente or atualizando)) then
                         pontos = marker.pontos
+                        actualFarmBlip = marker.blip_id
                         ToggleActionMenu('farm')
                     end
                 end
@@ -156,7 +160,7 @@ function ToggleFarmMenu()
 	farmMenuActive = not farmMenuActive
 	if farmMenuActive then
 		SetNuiFocus(true,true)
-		SendNUIMessage({
+        SendNUIMessage({
             showmenu = true,
             type = 'farm',
             scriptName = scriptName,
@@ -189,8 +193,13 @@ function setActualFarm(farm)
     actualFarm = farm
 end
 
-function getFarmPoint(randomico)
-    -- TriggerServerEvent("VRP:Debug", vRP.dump(pontos), GetCurrentResourceName())
+function getFarmPoint()
+    local group = vSERVER.getGroup(actualFarmType, actualFarmBlip)
+    local randomico = false
+    if(group) then
+        randomico = group.randomico == 1
+        farmLimit = group.farmLimit
+    end
     local routes = pontos[actualFarmType] or {}
     if(#routes > 0) then
         local routeIndex = math.random(1, #routes)
@@ -231,6 +240,14 @@ function getRandomLocation(atual, max)
         novo = math.random(max)
     end
     return novo
+end
+
+function getCoolDown(farmType)
+    return cooldown[farmType] or 0
+end
+
+function setCoolDown(farmType, value)
+    cooldown[farmType] = value
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- [ FUNCOES ACESSO REMOTO ]

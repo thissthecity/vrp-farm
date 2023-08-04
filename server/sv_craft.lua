@@ -26,9 +26,12 @@ AddEventHandler("farm:Server:Producao", function(data)
                     TriggerClientEvent("farm:Client:DoneCrafting", source, itemData.item)
                     if(getItemsFromInventory(source, user_id, itemData, data.packSize)) then
                         local message = ""
-                        if(itemData.id == "dinheiro") then
+                        if(itemData.id == "dinheiro" or itemData.id == "dinheiro2") then
                             vRP.giveMoney(user_id, data.packSize)
                             message = string.format("Lavagem concluída para: $%s", data.packSize)
+                            if(itemData.id == "dinheiro2") then
+                                message = string.format("Troca bem sucedida para $%s", data.packSize)
+                            end
                         else
                             vRP.giveInventoryItem(user_id, itemData.id, data.packSize)
                             message = string.format("Fabricação concluída para: <b>%sx %s</b>.", data.packSize, itemData.descricao)
